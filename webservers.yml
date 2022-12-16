@@ -1,0 +1,43 @@
+---
+- name: Configure webserver with nginx
+  hosts: webservers
+  become: True
+  tasks:
+    - name: Ensure nginx is installed
+      package: name=nginx update_cache=yes
+
+    - name: Ensure diretory
+      file:
+        path: /etc/nginx/sites-available/default
+        state: directory
+        mode: "0755"
+
+    - name: Ensure diretory
+      file:
+        path: /usr/share/nginx/html
+        state: directory
+        mode: "0755"
+
+    - name: Ensure diretory
+      file:
+        path: /etc/nginx/sites-enabled
+        state: directory
+        mode: "0755"
+    - name: Copy nginx config file
+      copy:
+        src: /home/tintin/ansible/files/nginx.conf
+        dest: /etc/nginx/sites-available/default
+
+    - name: Enable configuration
+      file: 
+        src: /etc/nginx/sites-available/default
+        dest: /etc/nginx/sites-enabled/default
+        state: link
+
+    - name: Copy index.html
+      template: >
+        src=/home/tintin/ansible/files/index.html
+        dest=/usr/share/nginx/html/index.html
+
+    - name: Restart nginx
+      service: name=nginx state=restarted

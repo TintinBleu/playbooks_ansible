@@ -1,0 +1,8 @@
+---
+# ansible-playbook playbooks/git-scm.yml --ask-become-pass
+- name: Install Git-SCM sur Ubuntu
+  hosts: localhost
+  become: Yes
+  tasks:
+    - name: Ensure Git-SCM is installed
+      package: name=git-all update_cache=yes
