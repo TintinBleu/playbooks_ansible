@@ -1,0 +1,22 @@
+---
+- name: Install Terraform
+  hosts: localhost
+  become: True
+  
+  tasks:
+    - name: Add Terraform's official GPG key
+      apt_key:
+        url: https://apt.releases.hashicorp.com/gpg
+        state: present
+
+    - name: Add Terraform Repository
+      apt_repository:
+        repo: deb https://apt.releases.hashicorp.com jammy main
+        state: present
+
+    - name: Install Terraform
+      apt:
+        name: terraform
+        state: present
+        update_cache: True
+...

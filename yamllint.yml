@@ -1,0 +1,10 @@
+---
+- name: Install yaml-lint
+  hosts: localhost
+  become: true
+  tasks:
+    - name: ensure yaml-lint is installed
+      apt:
+        name: yamllint
+        state: present
+        

@@ -1,0 +1,9 @@
+---
+- name: Install ansible-lint
+  hosts: localhost
+  become: true
+  tasks:
+    - name: ensure Ansible-lint is installed
+      apt:
+        name: ansible-lint
+        state: present
