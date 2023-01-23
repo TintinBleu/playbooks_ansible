@@ -1,0 +1,44 @@
+---
+- name: Install Gitlab-runner
+  hosts: aws
+  become: True
+  vars: 
+    reg_token: GR1348941L4Yw5xxLxvcHH2_z4EUs
+  tasks:
+    - name: Add the official GitLab repository
+      ansible.builtin.shell: |
+        curl -L "https://packages.gitlab.com/install/repositories/runner/gitlab-runner/script.deb.sh" | bash
+      args:
+        warn: false
+
+    - name: Install Gitlab-runner
+      ansible.builtin.apt:
+        name: gitlab-runner
+        state: present
+
+    - name: Register shell runner
+      ansible.builtin.shell: |
+        gitlab-runner register \
+        --non-interactive \
+        --url "https://gitlab.com/" \
+        --registration-token "{{ reg_token }}" \
+        --executor "shell" \
+        --description "shell executor" \
+        --tag-list "shell" \
+        --run-untagged="false" \
+        --locked="true" \
+        --access-level="ref_protected"
+
+    - name: Register docker runner
+      ansible.builtin.shell: |
+        gitlab-runner register \
+        --non-interactive \
+        --url "https://gitlab.com/" \
+        --registration-token "{{ reg_token }}" \
+        --executor "docker" \
+        --docker-image alpine:latest \
+        --description "docker-runner" \
+        --tag-list "docker" \
+        --run-untagged="false" \
+        --locked="true" \
+        --access-level="ref_protected"

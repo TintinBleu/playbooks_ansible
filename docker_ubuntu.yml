@@ -1,7 +1,7 @@
 ---
-- hosts: localhost
+- name: Install Docker
+  hosts: aws
   become: True
-  name: Install Docker
 
   tasks:
     - name: Install required system packages
@@ -30,8 +30,20 @@
           - docker-ce
           - docker-ce-cli
           - containerd.io
+          - docker-compose
           - docker-compose-plugin
+        force_apt_get: yes
         state: present
         update_cache: True
-...
-      
+
+    - name: Ensure group "docker" exists with correct gid
+      group:
+        name: docker
+        state: present
+    
+    - name: Add the current user to the docker group
+      user:
+        name: "ubuntu"
+        groups: docker
+        append: yes
+

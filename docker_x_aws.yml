@@ -1,0 +1,40 @@
+---
+- name: Install Docker
+  hosts: aws_ec2
+  become: True
+
+  tasks:
+    - name: install yum-utils
+      ansible.builtin.yum:
+        name: yum-utils
+        state: present
+
+    - name: Set up the repository
+      ansible.builtin.command: yum-config-manager --add-repo https://download.docker.com/linux/rhel/docker-ce.repo
+
+    - name: Install Docker Engine
+      ansible.builtin.yum:
+        name:
+          - docker-ce
+          - docker-ce-cli
+          - containerd.io
+          - docker-compose-plugin
+        state: present
+        update_cache: True
+
+    - name: Ensure group "docker" exists with correct gid
+      group:
+        name: docker
+        state: present
+    
+    - name: Add the current user to the docker group
+      user:
+        name: "ec2-user"
+        groups: docker
+        append: yes
+
+    - name: Start Docker
+      ansible.builtin.systemd:
+        name: docker
+        state: started
+        enabled: yes

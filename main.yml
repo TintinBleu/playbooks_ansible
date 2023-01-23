@@ -1,0 +1,6 @@
+---
+- name: This is the main tasks filee for preparing the ubuntu machine
+  hosts: ubuntu
+  become: yes
+  include: 
+    - docker.yml

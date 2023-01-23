@@ -1,7 +1,7 @@
 ---
 - name: Install VS code
   hosts: localhost
-  become: True
+  become: yes
   tasks:
     - name: install vscode
       apt:

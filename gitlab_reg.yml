@@ -1,0 +1,20 @@
+---
+- name: Install Gitlab-runner
+  hosts: aws
+  become: True
+  vars: 
+    reg_token: GR1348941Bc7cmzAxYdj2H4jLXumQ
+  tasks:
+    - name: Register docker runner
+      ansible.builtin.shell: |
+        gitlab-runner register \
+        --non-interactive \
+        --url "https://gitlab.com/" \
+        --registration-token "{{ reg_token }}" \
+        --executor "docker" \
+        --docker-image alpine:latest \
+        --description "docker-runner" \
+        --tag-list "docker" \
+        --run-untagged="false" \
+        --locked="true" \
+        --access-level="ref_protected"

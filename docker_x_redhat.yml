@@ -1,0 +1,39 @@
+---
+- name: Install Docker
+  hosts: aws_redhat
+  become: True
+
+  tasks:
+    - name: Install the containerd rpm from the repo
+      ansible.builtin.yum:
+        name: https://download.docker.com/linux/rhel/9/s390x/stable/Packages/containerd.io-1.6.14-3.1.el9.s390x.rpm
+        state: present
+    - name: Install the docker-ce rpm from the repo
+      ansible.builtin.yum:
+        name: https://download.docker.com/linux/rhel/9/s390x/stable/Packages/docker-ce-20.10.22-3.el9.s390x.rpm
+        state: present
+    - name: Install the docker-ce-cli rpm from the repo
+      ansible.builtin.yum:
+        name: https://download.docker.com/linux/rhel/9/s390x/stable/Packages/docker-ce-cli-20.10.22-3.el9.s390x.rpm
+        state: present
+    - name: Install the docker-compose-plugin rpm from the repo
+      ansible.builtin.yum:
+        name: https://download.docker.com/linux/rhel/9/s390x/stable/Packages/docker-compose-plugin-2.14.1-3.el9.s390x.rpm
+        state: present
+
+    - name: Ensure group "docker" exists with correct gid
+      group:
+        name: docker
+        state: present
+    
+    - name: Add the current user to the docker group
+      user:
+        name: "ec2-user"
+        groups: docker
+        append: yes
+
+    - name: Start Docker
+      ansible.builtin.systemd:
+        name: docker
+        state: started
+        enabled: yes
